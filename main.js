@@ -1,74 +1,63 @@
 const url = 'http://localhost:5000/api'
+
 const getUsers = () => {
-    fetch(url)
-        .then(response => response.json())
-        .then(data => (renderApiResult.textContent = JSON.stringify(data)))
-        .catch(error => console.error(error))
+    axios
+        .get(url)
+        .then(response => {
+            apiResult.textContent = JSON.stringify(response.data)
+        })
+        .catch(error => console.log(error))
+}
+
+const addNewUser = newUser => {
+    axios
+        .post(url, newUser)
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => console.log(error))
 }
 const getUser = id => {
-    fetch(`${url}/${id}`)
-        .then(response => response.json())
-        .then(data => {
+    axios
+        .get(`${url}/${id}`)
+        .then(response => {
+            const data = response.data
             userName.textContent = data.name
             userCity.textContent = data.city
+            userID.textContent = data.id
             userAvatar.src = data.avatar
         })
-
-        .catch(error => console.error(error))
+        .catch(error => console.log(error))
 }
-const addUser = newUser => {
-    fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(newUser),
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-        }
-    })
-        .then(response => response.json())
-        .then(data => (alertApi.textContent = data))
-        .catch(error => console.error(error))
+const updateUser = (id, userUpdated) => {
+    axios
+        .put(`${url}/${id}`, userUpdated)
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => console.log(error))
 }
-const updateUser = (updatedUser, id) => {
-    fetch(`${url}/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(updatedUser),
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-        }
-    })
-        .then(response => response.json())
-        .then(data => (alertApi.textContent = data))
-        .catch(error => console.error(error))
-}
-
 const deleteUser = id => {
-    fetch(`${url}/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-        }
-    })
-        .then(response => response.json())
-        .then(data => (alertApi.textContent = data))
-        .catch(error => console.error(error))
+    axios
+        .delete(`${url}/${id}`)
+        .then(response => console.log(response))
+
+        .catch(error => console.log(error))
 }
 
+const userUpdated = {
+    name: 'Lucas',
+    city: 'São Gonçalo',
+    avatar: 'https://randomuser.me/api/portraits/'
+}
 const newUser = {
-    name: 'john Doe',
-    avatar: 'https://picsum.photos/200/300',
-    city: 'Rio de Janeiro'
-}
-addUser(newUser)
-
-const updatedUser = {
-    name: 'jane Doe',
-    avatar: 'https://picsum.photos/200/300',
-    city: 'Rio Grande do Norte'
+    name: 'John',
+    avatar: 'https://i.pravatar.cc/300',
+    city: 'New York'
 }
 
-updateUser(updatedUser, 4)
-
-deleteUser(4)
 getUsers()
 getUser(1)
-
+addNewUser(newUser)
+updateUser(3, userUpdated)
+deleteUser(4)
